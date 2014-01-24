@@ -7,9 +7,11 @@ import java.util.Map;
 import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
+import org.htmlparser.filters.LinkRegexFilter;
 import org.htmlparser.filters.NodeClassFilter;
 import org.htmlparser.filters.OrFilter;
 import org.htmlparser.filters.RegexFilter;
+import org.htmlparser.tags.LinkTag;
 import org.htmlparser.tags.TableTag;
 import org.htmlparser.util.NodeList;
 
@@ -48,14 +50,22 @@ public class HtmlTxtParser {
 	 * 获取链接地址,正则过滤
 	 * @return
 	 */
-	public List<Map<Long, String>> getValuesOfLinkContent(String content, String url, String encode) {
+	public List<Map<Long, String>> getValuesOfLinkContent(String content, String regxStr, String encode) {
 		List list = new ArrayList<Map<Long, String>>();
 		try {
 			Parser parser = Parser.createParser(content, encode);
 			
 			//add Filter
-			NodeFilter filter = new RegexFilter(regx);
+			
+			NodeFilter filter = new RegexFilter(regxStr);
 			NodeList nodeList = parser.extractAllNodesThatMatch(filter);
+			System.out.println(nodeList.size());
+			for(int i = 0; i < nodeList.size(); i++) {
+				Node node = (Node)nodeList.elementAt(i);
+				System.out.println("link is: " + node.toHtml());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return list;
@@ -87,5 +97,39 @@ public class HtmlTxtParser {
 		}
 		return text.toString();
 	}
+	
+	/**
+     * 在链接地址中进行正则匹配,返回的是Link结点
+     * 
+     * @param url        请求url
+     * @param encoding    字符编码
+     * @param regex        待匹配的正则表达式
+     */
+    public static void linkTagRegexFilter(String url,String encoding,String regex){
+        try {
+            Parser parser = new Parser();
+            parser.setURL(url);
+            if(null==encoding){
+                parser.setEncoding(parser.getEncoding());
+            }else{
+                parser.setEncoding(encoding);
+            }
+            //OrFilter是结合几种过滤条件的‘或’过滤器
+            NodeFilter filter = new LinkRegexFilter(regex);
+            NodeList list = parser.extractAllNodesThatMatch(filter);
+            for(int i=0; i<list.size();i++){
+            	Node node = list.elementAt(i);
+            	LinkTag linkTag = new LinkTag();
+            	linkTag.setText(node.toHtml());
+            	System.out.println(linkTag.extractLink());
+                System.out.println(linkTag.getText());
+                System.out.println(linkTag.getFirstChild());
+                System.out.println("link is :" + node.toHtml());
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -9,15 +9,17 @@ public class MongoDBClient {
 	private static final String ip = "localhost";
 	private static final int port = 27017;
 	private MongoClient mongoClient = null;
-	private DB db = null;
 
-	public MongoDBClient(String dbname) {
+	public MongoDBClient(String ip, int port) {
 		try {
 			this.mongoClient =  new MongoClient(ip, port);
-			this.db = this.mongoClient.getDB(dbname);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void close() {
+		this.mongoClient.close();
 	}
 
 	public final MongoClient getMongoClient() {
@@ -26,13 +28,5 @@ public class MongoDBClient {
 
 	public final void setMongoClient(MongoClient mongoClient) {
 		this.mongoClient = mongoClient;
-	}
-
-	public final DB getDb() {
-		return db;
-	}
-
-	public final void setDb(DB db) {
-		this.db = db;
 	}
 }

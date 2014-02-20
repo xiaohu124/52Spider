@@ -14,6 +14,7 @@ public class Position extends BasicDBObject {
 		this.pos_id = pos_id;
 		this.pos_city = pos_city;
 		this.pos_url = pos_url;
+		
 		put("posid", pos_id);
 		put("city", pos_city);
 		put("url", pos_url);
@@ -24,6 +25,7 @@ public class Position extends BasicDBObject {
 	}
 
 	public void setPos_id(long pos_id) {
+		put("posid", pos_id);
 		this.pos_id = pos_id;
 	}
 
@@ -32,6 +34,7 @@ public class Position extends BasicDBObject {
 	}
 
 	public void setPos_city(String pos_city) {
+		put("city", pos_city);
 		this.pos_city = pos_city;
 	}
 
@@ -40,6 +43,7 @@ public class Position extends BasicDBObject {
 	}
 
 	public void setPos_url(String pos_url) {
+		put("url", pos_url);
 		this.pos_url = pos_url;
 	}
 }
